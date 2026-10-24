@@ -1,0 +1,46 @@
+:root {
+  // Ink & surfaces
+  --ink: #241a27;          // aubergine-black text
+  --ink-2: #4a3f4f;
+  --muted: #6e6275;
+  --line: #e5dfe9;
+  --line-strong: #cfc6d6;
+  --bg: #f6f4f7;           // cool lilac-grey page
+  --surface: #ffffff;
+  --sunken: #faf8fb;
+  --plum: #2a1a2e;         // sidebar / chrome
+  --plum-2: #3b2741;
+  --plum-text: #e9dfec;
+  --plum-muted: #a897ae;
+
+  // Action accent: nail lacquer
+  --lacquer: #b0245c;
+  --lacquer-hover: #951d4e;
+  --lacquer-tint: #fbe9f1;
+  --lacquer-ink: #7e1743;
+
+  // State colours (text on tint passes AA)
+  --sage: #276b4d;     --sage-tint: #e4f3eb;
+  --amber: #9a5b00;    --amber-tint: #fdf0db;
+  --brick: #b3261e;    --brick-tint: #fce9e7;
+
+  // Service category swatches (like colour-chart swatches in a salon)
+  --cat-hair: #b8643a;
+  --cat-skin: #c9788e;
+  --cat-nails: #8a6fb5;
+  --cat-waxing: #5f9c7e;
+  --cat-bridal: #b8923a;
+  --cat-other: #6b7c93;
+
+  // Type
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Figtree', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  // Radius hierarchy: controls < panels < dialogs
+  --r-control: 8px;
+  --r-panel: 12px;
+  --r-dialog: 16px;
+
+  --shadow-float: 0 12px 32px rgba(36, 26, 39, 0.18), 0 2px 6px rgba(36, 26, 39, 0.08);
+  --sidebar-w: 240px;
+}

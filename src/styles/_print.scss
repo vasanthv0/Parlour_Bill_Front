@@ -1,0 +1,10 @@
+@media print {
+  @page { margin: 10mm; }
+  body { background: #fff; }
+  .no-print, .sidebar, .topbar, .toasts { display: none !important; }
+  .shell { display: block !important; }
+  .page { padding: 0; max-width: none; }
+  .receipt { box-shadow: none; max-width: 80mm; margin: 0 auto; padding: 0; }
+  .receipt::before, .receipt::after { display: none; }
+  .receipt-total .amount { font-size: 26px; }
+}
