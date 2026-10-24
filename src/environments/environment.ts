@@ -2,5 +2,5 @@
 export const environment = {
   appName: 'ParlourBill',
   // apiUrl: 'https://your-api.example.com/api/v1',
-  apiUrl: 'https://parlour-bill-back.onrender.com',
+  apiUrl: 'https://parlour-bill-back.onrender.com/api/v1',
 };
