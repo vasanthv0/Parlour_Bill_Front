@@ -14,7 +14,7 @@ import { AuthService } from '../core/auth.service';
 import { Role } from '../core/models';
 
 export const ALL_FEATURES = [
-  'page.dashboard', 'page.customers', 'page.services', 'page.combos', 'page.referrals', 'page.team', 'page.settings',
+  'page.dashboard', 'page.customers', 'page.services', 'page.combos', 'page.referrals', 'page.team', 'page.settings', 'page.attendance',
   'action.services.add', 'action.team.add', 'action.team.edit', 'action.team.reset', 'action.team.deactivate',
   'action.combos.add', 'action.referrals.add', 'action.whatsapp.send',
 ];
@@ -75,7 +75,7 @@ const summary = (empty: boolean) => ({
   daily: days, topServices: empty ? [] : [{ name: 'Facial', quantity: 5, revenue: 2500 }], byStaff: empty ? [] : [{ name: 'Riya', invoices: 7, revenue: 5000 }],
 });
 const defs = [
-  ...['Dashboard', 'Customers', 'Services', 'Combos', 'Referrals', 'Team', 'Settings'].map((l) => ({ key: `page.${l.toLowerCase()}`, group: 'page', label: l, description: `The ${l} page.` })),
+  ...['Dashboard', 'Customers', 'Services', 'Combos', 'Referrals', 'Team', 'Settings', 'Attendance'].map((l) => ({ key: `page.${l.toLowerCase()}`, group: 'page', label: l, description: `The ${l} page.` })),
   { key: 'action.services.add', group: 'action', requires: 'page.services', label: 'Add service button', description: 'Create services.' },
   { key: 'action.team.add', group: 'action', requires: 'page.team', label: 'Add team member button', description: 'Create staff.' },
   { key: 'action.team.edit', group: 'action', requires: 'page.team', label: 'Edit team member button', description: 'Edit staff.' },
@@ -84,6 +84,13 @@ const defs = [
   { key: 'action.combos.add', group: 'action', requires: 'page.combos', label: 'Add combo button', description: 'Create combos.' },
   { key: 'action.referrals.add', group: 'action', requires: 'page.referrals', label: 'Add referrer button', description: 'Create referrers.' },
   { key: 'action.whatsapp.send', group: 'action', label: 'Send on WhatsApp button', description: 'WhatsApp.' },
+];
+const attendanceRows = [
+  { id: 'a1', userId: 'u2', userName: 'Riya', workDate: '2026-10-29', status: 'checked_out',
+    checkIn: { at: '2026-10-29T03:32:00.000Z', latitude: 13.0829, longitude: 80.2709, accuracyM: 12, distanceM: 28.4, deviceType: 'personal' },
+    checkOut: { at: '2026-10-29T12:45:00.000Z', latitude: 13.0826, longitude: 80.2706, accuracyM: 9, distanceM: 14, deviceType: 'shared' } },
+  { id: 'a2', userId: 'u3', userName: 'Farah', workDate: '2026-10-29', status: 'checked_in',
+    checkIn: { at: '2026-10-29T03:50:00.000Z', latitude: 13.0828, longitude: 80.2708, accuracyM: 20, distanceM: 15, deviceType: 'shared' }, checkOut: null },
 ];
 const platformParlour = { id: 'pp1', name: 'Glow Salon', status: 'active', createdAt: iso, features: featuresWith(['page.team']),
   owner: { id: 'o1', name: 'Olive Owner', email: 'olive@glow.test', isActive: true, lastLoginAt: iso }, counts: { team: 3, bills: 42, customers: 18, services: 9 } };
@@ -110,6 +117,11 @@ export function respond(path: string, empty: boolean): unknown {
       { id: 'u2', name: 'Riya', email: 'riya@x.test', mobile: '9840011111', role: 'staff', isActive: true, lastLoginAt: iso, createdAt: iso },
       { id: 'u3', name: 'Farah', email: 'farah@x.test', mobile: null, role: 'staff', isActive: false, lastLoginAt: null, createdAt: iso },
     ] })],
+    [/^\/attendance\/today$/, () => ({ data: { workDate: '2026-10-29', timezone: 'Asia/Kolkata', configured: !empty, radiusM: 100, maxAccuracyM: 50, record: null } })],
+    [/^\/attendance\/settings$/, () => ({ data: empty
+      ? { configured: false, latitude: null, longitude: null, radiusM: 100, maxAccuracyM: 50, updatedAt: null }
+      : { configured: true, latitude: 13.0827, longitude: 80.2707, radiusM: 100, maxAccuracyM: 50, updatedAt: iso } })],
+    [/^\/attendance\/records$/, () => list(attendanceRows)],
     [/^\/platform\/features$/, () => ({ data: defs })],
     [/^\/platform\/summary$/, () => ({ data: { parlours: empty ? 0 : 5, active: empty ? 0 : 4, suspended: empty ? 0 : 1, bills: empty ? 0 : 320 } })],
     [/^\/platform\/parlours\/[^/]+$/, () => ({ data: platformParlour })],

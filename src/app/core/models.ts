@@ -169,3 +169,62 @@ export interface Referrer {
 
 /** What the billing counter sees when it looks a referrer up. */
 export interface ReferrerLookup { id: string; code: string; name: string; percent: number }
+
+// ── Attendance (GPS check-in) ──────────────────────────────────────
+export type DeviceType = 'personal' | 'shared';
+export type AttendanceStatus = 'checked_in' | 'checked_out';
+/** How the server judged a GPS reading. 'stale' means the device clock or reading is badly out of date. */
+export type LocationVerdict = 'ok' | 'out_of_range' | 'inaccurate' | 'stale';
+
+/** One check-in or check-out: when, where, and how far from the salon the server measured it. */
+export interface AttendancePunch {
+  at: string;
+  latitude: number;
+  longitude: number;
+  accuracyM: number;
+  distanceM: number;
+  deviceType: DeviceType;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  userId: string;
+  /** Only present in the admin's team list. */
+  userName?: string;
+  /** YYYY-MM-DD in the parlour's own time zone. */
+  workDate: string;
+  status: AttendanceStatus;
+  checkIn: AttendancePunch;
+  checkOut: AttendancePunch | null;
+}
+
+/** What the attendance screen needs. Deliberately has no salon coordinates. */
+export interface TodayAttendance {
+  workDate: string;
+  timezone: string;
+  /** False until an admin has set the salon location. */
+  configured: boolean;
+  radiusM: number;
+  maxAccuracyM: number;
+  record: AttendanceRecord | null;
+}
+
+/** The server's answer to "where do I stand?" (the distance is calculated there, never in the browser). */
+export interface LocationCheck {
+  verdict: LocationVerdict;
+  withinRadius: boolean;
+  distanceM: number;
+  radiusM: number;
+  accuracyM: number;
+  maxAccuracyM: number;
+}
+
+/** Admin only. */
+export interface AttendanceSettings {
+  configured: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  radiusM: number;
+  maxAccuracyM: number;
+  updatedAt: string | null;
+}

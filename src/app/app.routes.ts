@@ -9,6 +9,7 @@ const shared: Routes = [
   { path: 'invoices', title: 'Bills', loadComponent: () => import('./features/shared/invoices.component').then((m) => m.InvoicesComponent) },
   { path: 'invoices/:id', title: 'Bill', loadComponent: () => import('./features/shared/invoice-detail.component').then((m) => m.InvoiceDetailComponent) },
   { path: 'customers', title: 'Customers', canActivate: [featureGuard('page.customers')], loadComponent: () => import('./features/shared/customers.component').then((m) => m.CustomersComponent) },
+  { path: 'attendance', title: 'Attendance', canActivate: [featureGuard('page.attendance')], loadComponent: () => import('./features/shared/attendance.component').then((m) => m.AttendanceComponent) },
   { path: 'account', title: 'Account', loadComponent: () => import('./features/shared/account.component').then((m) => m.AccountComponent) },
 ];
 
@@ -43,6 +44,7 @@ export const routes: Routes = [
       { path: 'referrals/:id', title: 'Referrer', canActivate: [featureGuard('page.referrals')], loadComponent: () => import('./features/admin/referral-detail.component').then((m) => m.ReferralDetailComponent) },
       { path: 'services', title: 'Services', canActivate: [featureGuard('page.services')], loadComponent: () => import('./features/admin/services.component').then((m) => m.ServicesComponent) },
       { path: 'team', title: 'Team', canActivate: [featureGuard('page.team')], loadComponent: () => import('./features/admin/team.component').then((m) => m.TeamComponent) },
+      { path: 'attendance-log', title: 'Staff attendance', canActivate: [featureGuard('page.attendance')], loadComponent: () => import('./features/admin/attendance-log.component').then((m) => m.AttendanceLogComponent) },
       { path: 'settings', title: 'Settings', canActivate: [featureGuard('page.settings')], loadComponent: () => import('./features/admin/settings.component').then((m) => m.SettingsComponent) },
       ...shared,
     ],

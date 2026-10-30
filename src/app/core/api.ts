@@ -2,7 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Combo, Customer, FeatureDef, Invoice, InvoiceRow, Paged, PaymentMethod, Parlour, PlatformParlour, PlatformSummary, Referrer, ReferrerLookup, Role, Service, Summary, TeamMember } from './models';
+import { GeoReading } from './geo-capture';
+import { AttendanceRecord, AttendanceSettings, Combo, Customer, DeviceType, FeatureDef, Invoice, InvoiceRow, LocationCheck, Paged, PaymentMethod, Parlour, PlatformParlour, PlatformSummary, Referrer, ReferrerLookup, Role, Service, Summary, TeamMember, TodayAttendance } from './models';
 
 const API = environment.apiUrl;
 
@@ -156,4 +157,28 @@ export class ReferrersApi {
     return this.http.patch<One<Referrer>>(`${API}/referrers/${id}`, body).pipe(unwrap());
   }
   remove(id: string): Observable<void> { return this.http.delete<void>(`${API}/referrers/${id}`); }
+}
+
+/** What a check-in or check-out sends: the GPS reading, which kind of device, and (on a shared one) the person's password. */
+export interface AttendanceAction extends GeoReading { deviceType: DeviceType; password?: string }
+
+@Injectable({ providedIn: 'root' })
+export class AttendanceApi {
+  private readonly http = inject(HttpClient);
+  private readonly url = `${API}/attendance`;
+
+  today(): Observable<TodayAttendance> { return this.http.get<One<TodayAttendance>>(`${this.url}/today`).pipe(unwrap()); }
+  /** The server measures the distance (Haversine) and says whether this reading would be accepted. Records nothing. */
+  locationCheck(reading: GeoReading): Observable<LocationCheck> { return this.http.post<One<LocationCheck>>(`${this.url}/location-check`, reading).pipe(unwrap()); }
+  checkIn(body: AttendanceAction): Observable<TodayAttendance> { return this.http.post<One<TodayAttendance>>(`${this.url}/check-in`, body).pipe(unwrap()); }
+  checkOut(body: AttendanceAction): Observable<TodayAttendance> { return this.http.post<One<TodayAttendance>>(`${this.url}/check-out`, body).pipe(unwrap()); }
+
+  /** Admin only. */
+  settings(): Observable<AttendanceSettings> { return this.http.get<One<AttendanceSettings>>(`${this.url}/settings`).pipe(unwrap()); }
+  saveSettings(body: { latitude: number; longitude: number; radiusM?: number; maxAccuracyM?: number }): Observable<AttendanceSettings> {
+    return this.http.put<One<AttendanceSettings>>(`${this.url}/settings`, body).pipe(unwrap());
+  }
+  records(q: { from?: string; to?: string; userId?: string; page?: number; limit?: number }): Observable<Paged<AttendanceRecord>> {
+    return this.http.get<Many<AttendanceRecord>>(`${this.url}/records`, { params: params(q) }).pipe(unwrapPage());
+  }
 }

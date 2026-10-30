@@ -21,12 +21,15 @@ export const ADMIN_NAV: NavItem[] = [
   { path: 'combos', label: 'Combos', icon: 'package', feature: 'page.combos' },
   { path: 'referrals', label: 'Referrals', icon: 'gift', feature: 'page.referrals' },
   { path: 'team', label: 'Team', icon: 'user', feature: 'page.team' },
+  { path: 'attendance', label: 'My attendance', icon: 'pin', feature: 'page.attendance' },
+  { path: 'attendance-log', label: 'Staff attendance', icon: 'clock', feature: 'page.attendance' },
   { path: 'settings', label: 'Settings', icon: 'sliders', feature: 'page.settings' },
 ];
 
 export const STAFF_NAV: NavItem[] = [
   { path: 'new-bill', label: 'New bill', icon: 'receipt' },
   { path: 'invoices', label: 'My bills', icon: 'list' },
+  { path: 'attendance', label: 'Attendance', icon: 'pin', feature: 'page.attendance' },
   { path: 'customers', label: 'Customers', icon: 'users', feature: 'page.customers' },
 ];
 

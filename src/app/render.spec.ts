@@ -2,6 +2,7 @@ import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Role } from './core/models';
 import { LoginComponent } from './features/auth/login.component';
+import { AttendanceLogComponent } from './features/admin/attendance-log.component';
 import { CombosComponent } from './features/admin/combos.component';
 import { DashboardComponent } from './features/admin/dashboard.component';
 import { ReferralDetailComponent } from './features/admin/referral-detail.component';
@@ -11,6 +12,7 @@ import { SettingsComponent } from './features/admin/settings.component';
 import { TeamComponent } from './features/admin/team.component';
 import { ShellComponent } from './features/shell/shell.component';
 import { AccountComponent } from './features/shared/account.component';
+import { AttendanceComponent } from './features/shared/attendance.component';
 import { CustomersComponent } from './features/shared/customers.component';
 import { InvoiceDetailComponent } from './features/shared/invoice-detail.component';
 import { InvoicesComponent } from './features/shared/invoices.component';
@@ -44,6 +46,9 @@ const PAGES: { name: string; component: Type<unknown>; role?: Role; heading: Reg
   { name: 'New bill (admin)', component: NewBillComponent, role: 'admin', heading: /New bill/ },
   { name: 'New bill (staff)', component: NewBillComponent, role: 'staff', heading: /New bill/ },
   { name: 'Account', component: AccountComponent, role: 'staff', heading: /Account/ },
+  { name: 'Attendance (staff)', component: AttendanceComponent, role: 'staff', heading: /Attendance/ },
+  { name: 'Attendance (admin)', component: AttendanceComponent, role: 'admin', heading: /Attendance/ },
+  { name: 'Staff attendance (admin)', component: AttendanceLogComponent, role: 'admin', heading: /Staff attendance/ },
   { name: 'Parlours (platform admin)', component: ParloursComponent, role: 'super_admin', heading: /Parlours/ },
   { name: 'Parlour detail (platform admin)', component: ParlourDetailComponent, role: 'super_admin', heading: /Glow Salon/ },
   { name: 'Sidebar shell (admin)', component: ShellComponent, role: 'admin', heading: /Demo Parlour/ },
@@ -81,7 +86,7 @@ describe('the platform admin\'s switches change what each page offers', () => {
 
   it('sidebar: switched-off pages disappear, per role', async () => {
     const all = await open(ShellComponent, { role: 'admin' });
-    for (const label of ['Dashboard', 'New bill', 'All bills', 'Customers', 'Services', 'Combos', 'Referrals', 'Team', 'Settings']) expect(all.text()).toContain(label);
+    for (const label of ['Dashboard', 'New bill', 'All bills', 'Customers', 'Services', 'Combos', 'Referrals', 'Team', 'Settings', 'My attendance', 'Staff attendance']) expect(all.text()).toContain(label);
     TestBed.resetTestingModule();
 
     const fewer = await open(ShellComponent, { role: 'admin', off: ['page.team', 'page.referrals', 'page.services'] });
@@ -90,7 +95,7 @@ describe('the platform admin\'s switches change what each page offers', () => {
     TestBed.resetTestingModule();
 
     const staff = await open(ShellComponent, { role: 'staff' });
-    for (const kept of ['New bill', 'My bills', 'Customers']) expect(staff.text()).toContain(kept);
+    for (const kept of ['New bill', 'My bills', 'Customers', 'Attendance']) expect(staff.text()).toContain(kept);
     for (const gone of ['Dashboard', 'Combos', 'Team', 'Settings', 'Parlours']) expect(staff.text()).not.toContain(gone);
     TestBed.resetTestingModule();
 
@@ -286,7 +291,7 @@ describe('the platform admin\'s parlour page', () => {
     const page = await open(ParlourDetailComponent, { role: 'super_admin' });
     expect(page.text()).toContain('Saved. Takes effect immediately.');
     const switches = [...page.host.querySelectorAll('[role="switch"]')] as HTMLElement[];
-    expect(switches.length).toBe(15);
+    expect(switches.length).toBe(16);
     expect(switches.some((s) => s.getAttribute('aria-checked') === 'false')).toBe(true); // Team is off in the sample parlour
     const combos = switches.find((s) => document.getElementById(s.getAttribute('aria-labelledby') ?? '')?.textContent === 'Combos')!;
     combos.click();
